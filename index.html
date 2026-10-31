@@ -480,13 +480,10 @@ root.addEventListener('click',function(e){
   var z=t.closest&&t.closest('img[data-zoom]');
   if(z)openBox(z.currentSrc||z.src,z.alt);
 });
-var box=document.createElement('div');
-box.id='lightbox';box.hidden=true;box.setAttribute('role','dialog');box.setAttribute('aria-label','Image viewer');box.tabIndex=-1;
-document.body.appendChild(box);
-function openBox(src,alt){box.innerHTML='<img src="'+esc(src)+'" alt="'+esc(alt)+'">';box.hidden=false;box.focus();}
-function closeBox(){box.hidden=true;box.innerHTML='';}
-box.addEventListener('click',closeBox);
-document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!box.hidden)closeBox();});
+var box=null;
+function closeBox(){if(box){box.remove();box=null;}}
+function openBox(src,alt){closeBox();box=document.createElement('div');box.id='lightbox';box.setAttribute('role','dialog');box.setAttribute('aria-label','Image viewer');box.tabIndex=-1;box.innerHTML='<img src="'+esc(src)+'" alt="'+esc(alt)+'">';box.addEventListener('click',closeBox);document.body.appendChild(box);box.focus();}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeBox();});
 window.addEventListener('hashchange',function(){
   var c=(location.hash==='#edit');
   if(c!==canEdit){canEdit=c;if(!c)editing=false;render();}
